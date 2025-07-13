@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
+
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -227,3 +230,15 @@ JAZZMIN_SETTINGS = {
     },
     "actions_sticky_top": False
 }
+
+
+#cors 
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",   # React/Vue dev server
+    "http://127.0.0.1:3000",
+    "https://frontend.yourdomain.com",  # если уже развернуто
+]
+
+CORS_ALLOW_CREDENTIALS = True
