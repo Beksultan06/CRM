@@ -39,6 +39,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/v1/users/", include("app.users.urls")),
     path("api/v1/students/", include("app.students.urls")),
+    path("api/v1/manager/", include("app.manager.urls")),
 
     # Swagger и Redoc
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),

@@ -1,0 +1,45 @@
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #444;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #eee;
+    }
+    h2 {
+        margin-bottom: 10px;
+    }
+</style>
+
+
+<h2>Отчет по преподавателям</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Уроков</th>
+            <th>Ставка</th>
+            <th>Оклад</th>
+            <th>Бонус</th>
+            <th>Итого</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in teachers %}
+        <tr>
+            <td>{{ t.teacher_name }}</td>
+            <td>{{ t.lesson_count }}</td>
+            <td>{{ t.rate }}</td>
+            <td>{{ t.salary }}</td>
+            <td>{{ t.bonus }}</td>
+            <td>{{ t.total_payout }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'app.users',
     'app.students',
+    'app.manager',
 
     'rest_framework',
     'rest_framework_simplejwt',
@@ -68,7 +69,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -242,3 +243,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+MANAGER_EMAIL = os.environ.get("MANAGER_EMAIL")

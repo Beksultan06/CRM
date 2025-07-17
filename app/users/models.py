@@ -24,6 +24,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     username = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    telegram = models.CharField(max_length=100, blank=True)
     role = models.CharField(max_length=20, choices=ROLE, default="Ученик")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -35,3 +39,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
