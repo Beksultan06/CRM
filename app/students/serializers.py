@@ -36,10 +36,20 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 class HomeworkSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer()
+    status_color = serializers.SerializerMethodField()  
 
     class Meta:
         model = Homework
-        fields = ("lesson", "score")
+        fields = ("lesson", "score", "status_color")  
+
+    def get_status_color(self, obj):
+        if obj.score >= 9:
+            return "green"
+        elif obj.score >= 6:
+            return "orange"
+        else:
+            return "red"
+
 
 class CurriculumSerializer(serializers.ModelSerializer):
     course = serializers.StringRelatedField()
@@ -51,3 +61,9 @@ class CurriculumSerializer(serializers.ModelSerializer):
 class StatisticsSerializer(serializers.Serializer):
     homework_avg = serializers.DecimalField(max_digits=5, decimal_places=2)
     attendance_percent = serializers.DecimalField(max_digits=5, decimal_places=2)
+
+
+class DiscountPolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscountPolicy
+        fields = "__all__"

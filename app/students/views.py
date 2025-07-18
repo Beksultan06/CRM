@@ -102,3 +102,26 @@ class StatisticsViewSet(viewsets.ViewSet):
             "homework_avg": round(hw_stats["avg"] or 0, 2),
         }
         return Response(StatisticsSerializer(data).data)
+
+class NextLessonView(APIView):
+    permission_classes = [IsAuthenticated, IsStudent]
+
+    def get(self, request):
+        student = request.user
+        now_dt = now()
+        lesson = Lesson.objects.filter(
+            course__enrollments__student=student,
+            date__gte=now_dt.date()
+        ).order_by("date", "start_time").first()
+
+        if not lesson:
+            return Response({"detail": "Нет ближайших занятий"})
+
+        return Response({
+            "course": lesson.course.name,
+            "teacher": str(lesson.teacher),
+            "room": lesson.classroom.label,
+            "date": lesson.date,
+            "start_time": lesson.start_time.strftime("%H:%M"),
+            "end_time": lesson.end_time.strftime("%H:%M"),
+        })

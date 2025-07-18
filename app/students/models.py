@@ -102,3 +102,12 @@ class Curriculum(TimeStampedModel):
     class Meta:
         unique_together = ("course", "month_number")
         ordering = ("course", "month_number")
+
+class DiscountPolicy(models.Model):
+    min_homework_score = models.PositiveSmallIntegerField()
+    max_homework_score = models.PositiveSmallIntegerField()
+    min_attendance = models.PositiveSmallIntegerField()
+    discount_amount = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.discount_amount} сом: {self.min_homework_score}-{self.max_homework_score} баллов, ≥{self.min_attendance} посещений"

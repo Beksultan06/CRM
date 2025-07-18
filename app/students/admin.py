@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Classroom, Lesson, Enrollment, Attendance, Homework, Curriculum
+from .models import Course, Classroom, Lesson, Enrollment, Attendance, Homework, Curriculum, DiscountPolicy
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
@@ -37,3 +37,7 @@ class HomeworkAdmin(admin.ModelAdmin):
 class CurriculumAdmin(admin.ModelAdmin):
     list_display = ("course", "month_number", "title")
     list_filter = ("course", "month_number")
+
+@admin.register(DiscountPolicy)
+class DiscountPolicyAdmin(admin.ModelAdmin):
+    list_display = ("discount_amount", "min_homework_score", "max_homework_score", "min_attendance")
