@@ -3,6 +3,7 @@ from django.db import models, transaction
 from django.utils import timezone
 from app.users.models import CustomUser
 from app.students.querysets import *
+from app.teacher.models import Group
 
 from .constants import WeekDay
 
@@ -40,6 +41,7 @@ class Lesson(TimeStampedModel):
     end_time = models.TimeField()
 
     group_name = models.CharField(max_length=50, blank=True, help_text="Название учебной группы")
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="lessons", null=True)
 
     class Meta:
         verbose_name = "Lesson"
@@ -59,6 +61,7 @@ class Enrollment(TimeStampedModel):
     student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="enrollments", limit_choices_to={"role": "Ученик"})
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrollments")
     group_name = models.CharField(max_length=50, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="enrollments", null=True)
 
     class Meta:
         unique_together = ("student", "course")

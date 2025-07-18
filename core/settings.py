@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'app.users',
     'app.students',
     'app.manager',
+    'app.teacher',
 
     'rest_framework',
     'rest_framework_simplejwt',
