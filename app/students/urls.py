@@ -5,8 +5,10 @@ from .views import (
     HomeworkViewSet,
     CurriculumViewSet,
     StatisticsViewSet,
+    NextLessonView
 )
 from .views_extra import ReportTableView, DiscountPolicyView
+from django.urls import path
 
 router = DefaultRouter()
 router.register(r"lessons", LessonViewSet, basename="student-lessons")

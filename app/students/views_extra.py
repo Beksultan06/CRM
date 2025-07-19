@@ -4,6 +4,7 @@ from .permissions import IsStudent
 from .models import Attendance, Homework
 from .models import DiscountPolicy
 from .serializers import DiscountPolicySerializer
+from rest_framework.views import APIView
 
 class ReportTableView(APIView):
     permission_classes = [IsAuthenticated, IsStudent]
