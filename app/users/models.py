@@ -23,19 +23,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ("Ученик", "Ученик"),
     )
 
-    username = models.CharField(max_length=150, unique=True)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
-    phone = models.CharField(max_length=20, blank=True)
-    telegram = models.CharField(max_length=100, blank=True)
-    role = models.CharField(max_length=20, choices=ROLE, default="Ученик")
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    username = models.CharField(max_length=150, unique=True, verbose_name="Имя пользователя")
+    first_name = models.CharField(max_length=150, blank=True, verbose_name="Имя")
+    last_name = models.CharField(max_length=150, blank=True, verbose_name="Фамилия")
+    phone = models.CharField(max_length=20, blank=True, verbose_name="Телефон")
+    telegram = models.CharField(max_length=100, blank=True, verbose_name="Телеграм")
+    role = models.CharField(max_length=20, choices=ROLE, default="Ученик", verbose_name="Роль")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    is_staff = models.BooleanField(default=False, verbose_name="Сотрудник")
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self):
         return f"{self.username} ({self.role})"

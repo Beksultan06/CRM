@@ -9,46 +9,53 @@ from .constants import WeekDay
 
 class TimeStampedModel(models.Model):
     """Абстрактная базовая модель для добавления созданных/обновленных временных меток."""
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создано")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Обновлено")
 
     class Meta:
         abstract = True
 
 class Course(TimeStampedModel):
-    """Представляет предмет/курс (например, английский язык, робототехника)."""
-    name = models.CharField(max_length=120, unique=True)
-    short_code = models.CharField(max_length=20, unique=True)
+    """Предмет или курс обучения."""
+    name = models.CharField(max_length=120, unique=True, verbose_name="Название курса")
+    short_code = models.CharField(max_length=20, unique=True, verbose_name="Код курса")
+
+    class Meta:
+        verbose_name = "Курс"
+        verbose_name_plural = "Курсы"
 
     def __str__(self):
         return self.name
 
 class Classroom(models.Model):
     """Физическое расположение класса."""
-    label = models.CharField(max_length=10, unique=True)
+    label = models.CharField(max_length=10, unique=True, verbose_name="Метка аудитории")
 
-    def __str__(self) -> str:
+    class Meta:
+        verbose_name = "Аудитория"
+        verbose_name_plural = "Аудитории"
+
+    def __str__(self):
         return self.label
 
 class Lesson(TimeStampedModel):
-    """Отдельный экземпляр урока привязан к определенной дате и времени."""
-    course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons")
-    teacher = models.ForeignKey(CustomUser, on_delete=models.PROTECT, limit_choices_to={"role": "Преподаватель"})
-    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT)
+    """Отдельный урок."""
+    course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons", verbose_name="Курс")
+    teacher = models.ForeignKey(CustomUser, on_delete=models.PROTECT, limit_choices_to={"role": "Преподаватель"}, verbose_name="Преподаватель")
+    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, verbose_name="Аудитория")
 
-    date = models.DateField(db_index=True)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    date = models.DateField(db_index=True, verbose_name="Дата")
+    start_time = models.TimeField(verbose_name="Время начала")
+    end_time = models.TimeField(verbose_name="Время окончания")
 
-    group_name = models.CharField(max_length=50, blank=True, help_text="Название учебной группы")
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="lessons", null=True)
+    group_name = models.CharField(max_length=50, blank=True, help_text="Название учебной группы", verbose_name="Название группы")
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="lessons", null=True, verbose_name="Группа")
 
     class Meta:
-        verbose_name = "Lesson"
-        verbose_name_plural = "Lessons"
+        verbose_name = "Урок"
+        verbose_name_plural = "Уроки"
         ordering = ("date", "start_time")
         constraints = [
-            # предотвратить повторное бронирование преподавателем или классом
             models.UniqueConstraint(fields=("teacher", "date", "start_time"), name="uq_teacher_timeslot"),
             models.UniqueConstraint(fields=("classroom", "date", "start_time"), name="uq_room_timeslot"),
         ]
@@ -57,60 +64,68 @@ class Lesson(TimeStampedModel):
         return f"{self.course.short_code} {self.date} {self.start_time}"
 
 class Enrollment(TimeStampedModel):
-    """Связь между студентом и курсом (сквозная связь «многие ко многим»)"""
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="enrollments", limit_choices_to={"role": "Ученик"})
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrollments")
-    group_name = models.CharField(max_length=50, blank=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="enrollments", null=True)
+    """Запись ученика на курс."""
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="enrollments", limit_choices_to={"role": "Ученик"}, verbose_name="Ученик")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrollments", verbose_name="Курс")
+    group_name = models.CharField(max_length=50, blank=True, verbose_name="Название группы")
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="enrollments", null=True, verbose_name="Группа")
 
     class Meta:
+        verbose_name = "Запись на курс"
+        verbose_name_plural = "Записи на курсы"
         unique_together = ("student", "course")
-        verbose_name = "Enrollment"
-        verbose_name_plural = "Enrollments"
 
 class Attendance(TimeStampedModel):
-    """
-Учет посещаемости занятий каждым учеником."""
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="attendances", limit_choices_to={"role": "Ученик"})
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="attendances")
-    attended = models.BooleanField(default=False)
+    """Учет посещаемости учеников."""
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="attendances", limit_choices_to={"role": "Ученик"}, verbose_name="Ученик")
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="attendances", verbose_name="Урок")
+    attended = models.BooleanField(default=False, verbose_name="Присутствовал")
 
     objects = AttendanceQuerySet.as_manager()
 
     class Meta:
+        verbose_name = "Посещаемость"
+        verbose_name_plural = "Посещаемости"
         unique_together = ("student", "lesson")
         indexes = [models.Index(fields=("student", "lesson"))]
-        
 
 class Homework(TimeStampedModel):
-    """
-Оценка домашнего задания за урок."""
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="homeworks", limit_choices_to={"role": "Ученик"})
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="homeworks")
-    score = models.PositiveSmallIntegerField()
+    """Оценка домашнего задания ученика."""
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="homeworks", limit_choices_to={"role": "Ученик"}, verbose_name="Ученик")
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="homeworks", verbose_name="Урок")
+    score = models.PositiveSmallIntegerField(verbose_name="Оценка")
 
     objects = HomeworkQuerySet.as_manager()
 
     class Meta:
+        verbose_name = "Домашнее задание"
+        verbose_name_plural = "Домашние задания"
         unique_together = ("student", "lesson")
         ordering = ("-created_at",)
 
 class Curriculum(TimeStampedModel):
-    """Учебная программа по месяцам и курсам — сворачиваемый список в пользовательском интерфейсе."""
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="curricula")
-    month_number = models.PositiveSmallIntegerField()
-    title = models.CharField(max_length=255)
-    lessons_outline = models.JSONField(help_text="Array of lesson titles / descriptions")
+    """Учебная программа по курсу и месяцам."""
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="curricula", verbose_name="Курс")
+    month_number = models.PositiveSmallIntegerField(verbose_name="Месяц (номер)")
+    title = models.CharField(max_length=255, verbose_name="Название программы")
+    lessons_outline = models.JSONField(help_text="Список тем / описаний уроков", verbose_name="План уроков")
 
     class Meta:
+        verbose_name = "Учебная программа"
+        verbose_name_plural = "Учебные программы"
         unique_together = ("course", "month_number")
         ordering = ("course", "month_number")
 
 class DiscountPolicy(models.Model):
-    min_homework_score = models.PositiveSmallIntegerField()
-    max_homework_score = models.PositiveSmallIntegerField()
-    min_attendance = models.PositiveSmallIntegerField()
-    discount_amount = models.PositiveIntegerField()
+    """Политика скидок на основе успеваемости и посещаемости."""
+    min_homework_score = models.PositiveSmallIntegerField(verbose_name="Мин. балл за ДЗ")
+    max_homework_score = models.PositiveSmallIntegerField(verbose_name="Макс. балл за ДЗ")
+    min_attendance = models.PositiveSmallIntegerField(verbose_name="Мин. посещаемость (%)")
+    discount_amount = models.PositiveIntegerField(verbose_name="Скидка (сом)")
+
+    class Meta:
+        verbose_name = "Скидочная политика"
+        verbose_name_plural = "Скидочные политики"
 
     def __str__(self):
-        return f"{self.discount_amount} сом: {self.min_homework_score}-{self.max_homework_score} баллов, ≥{self.min_attendance} посещений"
+        return f"{self.discount_amount} сом: {self.min_homework_score}-{self.max_homework_score} баллов, ≥{self.min_attendance}% посещений"
