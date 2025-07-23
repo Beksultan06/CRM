@@ -1,6 +1,6 @@
 from django.utils.timezone import localdate
 from django.db.models import Sum
-from app.finance.models import Payment
+from app.manager.models import Payment
 
 def today_summary():
     today = localdate()

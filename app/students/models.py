@@ -80,6 +80,11 @@ class Attendance(TimeStampedModel):
     student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="attendances", limit_choices_to={"role": "Ученик"}, verbose_name="Ученик")
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="attendances", verbose_name="Урок")
     attended = models.BooleanField(default=False, verbose_name="Присутствовал")
+    status = models.CharField(max_length=50, choices=[
+        ('attended', 'Присутствовал'),
+        ('absent', 'Отсутствовал'),
+        ('late', 'Опоздал'),
+    ])
 
     objects = AttendanceQuerySet.as_manager()
 
