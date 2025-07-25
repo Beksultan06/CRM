@@ -20,6 +20,7 @@ from app.administator.views.lessons import (
     LessonViewSet,
 )
 from app.administator.views.requests import StudentRequestViewSet
+from app.administator.views.teachers import TeacherViewSet
 
 router = DefaultRouter()
 
@@ -36,5 +37,6 @@ router.register(r'payments', PaymentViewSet, basename='payments')
 router.register(r'attendances', AttendanceViewSet, basename='attendances')
 router.register(r'lessons', LessonViewSet, basename='lessons')
 router.register(r'requests', StudentRequestViewSet, basename='student-requests')
+router.register(r'teachers', TeacherViewSet, basename='teachers')
 
 urlpatterns = router.urls
