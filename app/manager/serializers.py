@@ -2,11 +2,11 @@ from rest_framework import serializers
 from .models import StudentRequest, Payment, PaymentReminder, Expense, TeacherRate, TeacherBonus
 from app.users.models import CustomUser
 from app.students.models import Lesson, Attendance, Homework
-from app.students.serializers import LessonSerializer, AttendanceSerializer, HomeworkSerializer
+from app.students.serializers import LessonSerializer, HomeworkSerializer
 from rest_framework import serializers
 from django.db.models import Count
 
-class StudentRequestSerializer(serializers.ModelSerializer):
+class StudentManagerRequestSerializer(serializers.ModelSerializer):
     course_name = serializers.CharField(source="course.name", read_only=True)
     assigned_name = serializers.CharField(source="assigned_to.get_full_name", read_only=True)
 
@@ -17,6 +17,7 @@ class StudentRequestSerializer(serializers.ModelSerializer):
             "message", "status", "assigned_to", "assigned_name", "source",
             "created_at", "scheduled_at"
         ]
+        ref_name = "StudentManagerRequestSerializer"
 
     def create(self, validated_data):
         if 'assigned_to' not in validated_data:
@@ -44,7 +45,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ("first_name", "last_name", "phone", "telegram", "username", "password")
 
-class PaymentSerializer(serializers.ModelSerializer):
+class PaymentSerializers(serializers.ModelSerializer):
     student_name = serializers.CharField(source="student.get_full_name", read_only=True)
     course_name = serializers.CharField(source="course.name", read_only=True)
 
@@ -55,6 +56,7 @@ class PaymentSerializer(serializers.ModelSerializer):
             "amount_cash", "amount_transfer", "amount_online",
             "total_amount", "comment", "status", "date"
         ]
+        ref_name = "ManagerPaymentSerializer"
 
 class PaymentReminderSerializer(serializers.ModelSerializer):
     student_name = serializers.CharField(source="student.get_full_name", read_only=True)

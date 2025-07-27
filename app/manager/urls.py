@@ -1,9 +1,9 @@
 from rest_framework.routers import DefaultRouter
-from .views import StudentRequestViewSet, ManagerLessonViewSet, StudentViewSet, PaymentViewSet, PaymentReminderViewSet, UpcomingRemindersView, FinancialSummaryPDFView, TeacherReportPDFView
+from .views import StudentManagerRequestViewSet, ManagerLessonViewSet, StudentViewSet, PaymentViewSet, PaymentReminderViewSet, UpcomingRemindersView, FinancialSummaryPDFView, TeacherReportPDFView
 from django.urls import path
 
 router = DefaultRouter()
-router.register(r"requests", StudentRequestViewSet, basename="manager-requests")
+router.register(r"requests", StudentManagerRequestViewSet, basename="manager-requests")
 router.register(r"lessons", ManagerLessonViewSet, basename="manager-lessons")
 router.register(r"students", StudentViewSet, basename="manager-students")
 router.register(r"payments", PaymentViewSet, basename="manager-payments")

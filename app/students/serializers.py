@@ -27,12 +27,13 @@ class LessonSerializer(serializers.ModelSerializer):
             "group_name",
         )
 
-class AttendanceSerializer(serializers.ModelSerializer):
+class SudentsAttendanceSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer()
 
     class Meta:
         model = Attendance
         fields = ("lesson", "attended",)
+        ref_name = "SudentsAttendanceSerializer"
 
 class HomeworkSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer()
@@ -51,12 +52,13 @@ class HomeworkSerializer(serializers.ModelSerializer):
             return "red"
 
 
-class CurriculumSerializer(serializers.ModelSerializer):
+class StudentsCurriculumSerializer(serializers.ModelSerializer):
     course = serializers.StringRelatedField()
 
     class Meta:
         model = Curriculum
         fields = ("course", "month_number", "title", "lessons_outline")
+        ref_name = "StudentsCurriculumSerializer"
 
 class StatisticsSerializer(serializers.Serializer):
     homework_avg = serializers.DecimalField(max_digits=5, decimal_places=2)

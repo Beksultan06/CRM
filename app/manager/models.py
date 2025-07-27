@@ -84,7 +84,7 @@ class TeacherRate(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         limit_choices_to={"role": "Преподаватель"},
-        verbose_name="Преподаватель"
+        verbose_name="Преподаватель",
     )
     rate_per_lesson = models.PositiveIntegerField(verbose_name="Ставка за урок")
 
@@ -97,7 +97,8 @@ class TeacherBonus(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         limit_choices_to={"role": "Преподаватель"},
-        verbose_name="Преподаватель"
+        verbose_name="Преподаватель",
+        related_name="manager_teacher_bonuses",  # ✅ уникально
     )
     amount = models.PositiveIntegerField(verbose_name="Сумма бонуса")
     month = models.DateField(verbose_name="Месяц")

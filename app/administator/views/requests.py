@@ -41,8 +41,15 @@ class StudentRequestViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class StudentRequestViewSet(viewsets.ModelViewSet):
+class StudentFilterRequestViewSet(viewsets.ModelViewSet):
+    serializer_class = StudentRequestSerializer
     queryset = StudentRequest.objects.select_related('course').all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status', 'created_at']
     search_fields = ['full_name', 'phone']
+
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return StudentRequest.objects.none()
+        teacher_id = self.kwargs["teacher_id"]
+        return StudentRequest.objects.filter(course__teacher_id=teacher_id)

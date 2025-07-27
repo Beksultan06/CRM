@@ -79,3 +79,12 @@ class GroupStatisticsView(generics.RetrieveAPIView):
             "attendance_rate": attendance.aggregate(rate=Avg("attended"))['rate'] or 0.0,
             "avg_homework_score": homework.aggregate(avg=Avg("score"))['avg'] or 0.0
         }
+
+class GroupHomeworkView(generics.ListAPIView):
+    permission_classes = [IsTeacher]
+    serializer_class = HomeworkSubmissionSerializer
+
+    def get_queryset(self):
+        group_id = self.kwargs["pk"]
+        group = Group.objects.get(id=group_id)
+        return HomeworkSubmission.objects.filter(lesson__group_name=group.name)

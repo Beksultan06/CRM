@@ -64,6 +64,7 @@ class Group(models.Model):
     )
     age_group = models.CharField(max_length=50, verbose_name="Возрастная группа")
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
+    comment = models.TextField(blank=True, verbose_name="Комментарий")
 
     class Meta:
         verbose_name = "Группа"

@@ -8,12 +8,11 @@ from rest_framework.views import APIView
 from .models import Lesson, Attendance, Homework, Curriculum, Enrollment
 from .serializers import (
     LessonSerializer,
-    AttendanceSerializer,
     HomeworkSerializer,
-    CurriculumSerializer,
     StatisticsSerializer,
 )
 from .permissions import IsStudent
+from app.students.serializers import SudentsAttendanceSerializer, StudentsCurriculumSerializer
 
 class LessonViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """Возвращает расписание для текущего студента, отфильтрованное по диапазону дат."""
@@ -43,7 +42,7 @@ class LessonViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return Response(serializer.data)
 
 class AttendanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = AttendanceSerializer
+    serializer_class = SudentsAttendanceSerializer
     permission_classes = [IsAuthenticated, IsStudent]
 
     def get_queryset(self):
@@ -65,7 +64,7 @@ class HomeworkViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         )
 
 class CurriculumViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = CurriculumSerializer
+    serializer_class = StudentsCurriculumSerializer
     permission_classes = [IsAuthenticated, IsStudent]
     queryset = Curriculum.objects.select_related("course").order_by("month_number")
 

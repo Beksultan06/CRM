@@ -18,9 +18,9 @@ from app.utils import render_to_pdf
 from django.core.mail import EmailMessage
 from django.conf import settings
 
-class StudentRequestViewSet(viewsets.ModelViewSet):
+class StudentManagerRequestViewSet(viewsets.ModelViewSet):
     queryset = StudentRequest.objects.select_related("course", "assigned_to")
-    serializer_class = StudentRequestSerializer
+    serializer_class = StudentManagerRequestSerializer
     permission_classes = [IsAuthenticated, IsManager]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["status", "course"]
@@ -70,7 +70,7 @@ class StudentViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.select_related("student", "course")
-    serializer_class = PaymentSerializer
+    serializer_class = PaymentSerializers
     permission_classes = [IsAuthenticated, IsManager]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["status", "course"]

@@ -69,6 +69,7 @@ class Enrollment(TimeStampedModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrollments", verbose_name="Курс")
     group_name = models.CharField(max_length=50, blank=True, verbose_name="Название группы")
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="enrollments", null=True, verbose_name="Группа")
+    added_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления", null=True, blank=True)
 
     class Meta:
         verbose_name = "Запись на курс"

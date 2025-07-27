@@ -24,9 +24,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Jumush-bar.kg",
+        title="CRM",
         default_version='v1',
-        description="Jumush-bar.kg description",
+        description="CRM description",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="nurlanuuulubeksultan@gmail.com"),
         license=openapi.License(name="BSD License"),
@@ -41,6 +41,8 @@ urlpatterns = [
     path("api/v1/students/", include("app.students.urls")),
     path("api/v1/manager/", include("app.manager.urls")),
     path("api/v1/admin/", include("app.administator.urls")),
+    path("api/v1/teacher/", include("app.teacher.urls")),
+
 
     # Swagger и Redoc
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
