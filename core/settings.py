@@ -136,8 +136,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "dist",   # теперь Django видит и dist/assets, и dist/logo.png
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"  # для collectstatic на проде
+
+# для index.html
+TEMPLATES[0]["DIRS"] = [BASE_DIR / "dist"]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/ 'media'
@@ -259,3 +265,5 @@ EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() in ("true", "1")
+
+CORS_ALLOW_ALL_ORIGINS = True
