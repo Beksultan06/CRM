@@ -494,15 +494,15 @@ class Payment(models.Model):
         verbose_name="Счёт"
     )
     cash_amount = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0,
+        max_digits=1000, decimal_places=2, default=0,
         verbose_name="Оплата наличными"
     )
     transfer_amount = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0,
+        max_digits=1000, decimal_places=2, default=0,
         verbose_name="Оплата переводом"
     )
     online_amount = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0,
+        max_digits=1000, decimal_places=2, default=0,
         verbose_name="Оплата онлайн"
     )
     date = models.DateTimeField(default=timezone.now, verbose_name="Дата оплаты")

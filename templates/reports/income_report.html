@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; }
+        h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 6px; text-align: center; }
+        th { background-color: #f0f0f0; }
+        .total { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Отчёт по доходам</h2>
+    <p>Период: {{ period.start_date }} - {{ period.end_date }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Источник</th>
+                <th>Сумма</th>
+                <th>Дата</th>
+                <th>Основной способ оплаты</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.source }}</td>
+                <td>{{ item.amount }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.payment_type }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="total">Общий доход: {{ total_income }} сом</p>
+</body>
+</html>

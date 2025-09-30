@@ -10,8 +10,8 @@ from app.administration.views import (
     ActiveStudentsAnalytics, MonthlyIncomeAnalytics, TeacherWorkloadAnalytics, PopularCoursesAnalytics,
     StudentAttendanceView, StudentPaymentsView, LeadViewSet, AdminDashboardView,
     StudentGradesView, PaymentNotificationViewSet, MonthlyIncomePDFView, TeacherWorkloadPDFView,
-    CurrentUserProfileView, DirectionViewSet, TeacherProfileView, StudentProfileView, StudentHomeworkViewSet,
-    TeacherHomeworkViewSet, StudentProgressView, DiscountRegulationViewSet, StudentAttendanceUpdateView
+    CurrentUserProfileView, DirectionViewSet, TeacherProfileView, StudentProfileView, StudentHomeworkViewSet, InvoiceViewSet, 
+    TeacherHomeworkViewSet, StudentProgressView, DiscountRegulationViewSet, StudentAttendanceUpdateView, IncomeReportPDFView, IncomeReportView
     )
 
 router = DefaultRouter()
@@ -19,6 +19,8 @@ router.register(r'direction', DirectionViewSet, basename='direction')
 router.register(r'groups', GroupViewSet, basename='group')
 router.register(r'teachers-add', TeacherViewSet, basename='teacher_add')
 router.register(r'students-add', StudentViewSet, basename='student_add')
+router.register(r'invoices', InvoiceViewSet, basename='invoice')
+
 
 router.register(r'lessons-add', LessonViewSet, basename='lesson-add')
 router.register(r'attendances', AttendanceViewSet, basename='attendance')
@@ -75,4 +77,7 @@ urlpatterns = [
     path('financial-report-pdf/', FinancialReportPDFView.as_view(), name='financial-report-pdf'),
     path('monthly-income-pdf/', MonthlyIncomePDFView.as_view(), name='monthly-income-pdf'),
     path('teacher-workload-pdf/', TeacherWorkloadPDFView.as_view(), name='teacher-workload-pdf'),
+    path('incomes-pdf/', IncomeReportPDFView.as_view(), name='incomes-pdf'),
+    path("incomes/", IncomeReportView.as_view(), name="income-report"),
+
 ]

@@ -469,7 +469,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     )
     student_name = serializers.CharField(source='invoice.student.get_full_name', read_only=True)
     month_name = serializers.CharField(source='invoice.months.title', read_only=True)
-    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    total_amount = serializers.DecimalField(max_digits=10000, decimal_places=2, read_only=True)
     invoice_status = serializers.CharField(source='invoice.status', read_only=True)
 
     class Meta:

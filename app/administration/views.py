@@ -1878,3 +1878,111 @@ class StudentAttendanceUpdateView(generics.UpdateAPIView):
                 att.save()
 
         return Response({"detail": "Посещаемости обновлены"}, status=status.HTTP_200_OK)
+
+class IncomeReportPDFView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request, *args, **kwargs):
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        payments = Payment.objects.select_related("invoice", "invoice__months__group")
+
+        if start_date and end_date:
+            payments = payments.filter(date__range=[start_date, end_date])
+        elif start_date:
+            payments = payments.filter(date__gte=start_date)
+        elif end_date:
+            payments = payments.filter(date__lte=end_date)
+
+        grouped = defaultdict(lambda: {"cash": 0, "transfer": 0, "online": 0, "dates": []})
+
+        for p in payments:
+            grouped[p.invoice.months.group.group_name]["cash"] += float(p.cash_amount or 0)
+            grouped[p.invoice.months.group.group_name]["transfer"] += float(p.transfer_amount or 0)
+            grouped[p.invoice.months.group.group_name]["online"] += float(p.online_amount or 0)
+            grouped[p.invoice.months.group.group_name]["dates"].append(p.date.date())
+
+        items = []
+        total_income = 0
+
+        for source, data in grouped.items():
+            total = data["cash"] + data["transfer"] + data["online"]
+            total_income += total
+
+            payment_type = max(
+                [("Наличные", data["cash"]),
+                 ("Перевод", data["transfer"]),
+                 ("Онлайн-платёж", data["online"])],
+                key=lambda x: x[1]
+            )[0]
+
+            items.append({
+                "source": source,
+                "amount": total,
+                "date": min(data["dates"]) if data["dates"] else None,
+                "payment_type": payment_type
+            })
+
+        # Контекст для PDF
+        context = {
+            "period": {"start_date": start_date, "end_date": end_date},
+            "items": items,
+            "total_income": total_income
+        }
+
+        pdf_bytes = render_to_pdf("reports/income_report.html", context)
+
+        return HttpResponse(pdf_bytes, content_type="application/pdf")
+
+class IncomeReportView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request, *args, **kwargs):
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        payments = Payment.objects.select_related("invoice", "invoice__months__group")
+
+        if start_date and end_date:
+            payments = payments.filter(date__range=[start_date, end_date])
+        elif start_date:
+            payments = payments.filter(date__gte=start_date)
+        elif end_date:
+            payments = payments.filter(date__lte=end_date)
+
+        grouped = defaultdict(lambda: {"cash": 0, "transfer": 0, "online": 0, "dates": []})
+
+        for p in payments:
+            grouped[p.invoice.months.group.group_name]["cash"] += float(p.cash_amount or 0)
+            grouped[p.invoice.months.group.group_name]["transfer"] += float(p.transfer_amount or 0)
+            grouped[p.invoice.months.group.group_name]["online"] += float(p.online_amount or 0)
+            grouped[p.invoice.months.group.group_name]["dates"].append(p.date.date())
+
+        items = []
+        total_income = 0
+
+        for source, data in grouped.items():
+            total = data["cash"] + data["transfer"] + data["online"]
+            total_income += total
+
+            # Определяем "доминирующий" способ оплаты
+            payment_type = max(
+                [("Наличные", data["cash"]),
+                ("Перевод", data["transfer"]),
+                ("Онлайн-платёж", data["online"])],
+                key=lambda x: x[1]
+            )[0]
+
+            items.append({
+                "source": source,
+                "amount": total,
+                "date": min(data["dates"]) if data["dates"] else None,  # например, первая дата
+                "payment_type": payment_type
+            })
+
+        return Response({
+            "period": {"start_date": start_date, "end_date": end_date},
+            "items": items,
+            "total_income": total_income
+        })
