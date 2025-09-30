@@ -72,7 +72,10 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / "dist",       # React index.html
+            BASE_DIR / "templates",  # Django шаблоны
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,6 +87,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
@@ -137,13 +141,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # для collectstatic
 STATICFILES_DIRS = [
-    BASE_DIR / "dist",   # теперь Django видит и dist/assets, и dist/logo.png
+    BASE_DIR / "dist/assets",  # JS, CSS, картинки
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"  # для collectstatic на проде
-
-# для index.html
-TEMPLATES[0]["DIRS"] = [BASE_DIR / "dist"]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/ 'media'
