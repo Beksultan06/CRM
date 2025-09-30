@@ -19,7 +19,6 @@ from app.users.models import CustomUser
 import base64
 import uuid
 from django.core.files.base import ContentFile
-import imghdr
 
 class Base64FileField(serializers.FileField):
     """
