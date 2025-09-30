@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; }
+        h2 { text-align: center; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tfoot td {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Отчёт по выплатам преподавателям</h2>
+    <p>
+        {% if year %} Год: {{ year }} {% endif %}
+        {% if month %} Месяц: {{ month }} {% endif %}
+        <br>
+        Сформирован: {{ generated_at|date:"d.m.Y H:i" }}
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Преподаватель</th>
+                <th>Занятий</th>
+                <th>Ставка</th>
+                <th>Выплата</th>
+                <th>Бонус</th>
+                <th>Выплачено</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in payments %}
+            <tr>
+                <td>{{ p.teacher.get_full_name }}</td>
+                <td>{{ p.lessons_count }}</td>
+                <td>{{ p.rate }}</td>
+                <td>{{ p.payment }}</td>
+                <td>{{ p.bonus }}</td>
+                <td>{{ p.paid_amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4"><strong>Итого:</strong></td>
+                <td>{{ total_amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

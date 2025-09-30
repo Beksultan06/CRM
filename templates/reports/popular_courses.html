@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; }
+        h2 { text-align: center; margin-bottom: 20px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Популярные курсы</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Место</th>
+                <th>Курс</th>
+                <th>Количество студентов</th>
+                <th>Количество групп</th>
+                <th>Доход (сом)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in courses %}
+            <tr>
+                <td>{{ c.rank }}</td>
+                <td>{{ c.course }}</td>
+                <td>{{ c.students_count }}</td>
+                <td>{{ c.groups_count }}</td>
+                <td>{{ c.income }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

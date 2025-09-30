@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+        th, td { border: 1px solid #333; padding: 5px; text-align: left; }
+        th { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h2>Финансовые отчёты</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Тип отчёта</th>
+                <th>Доход</th>
+                <th>Расходы</th>
+                <th>Чистая прибыль</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.report_type_display }}</td>
+                <td>{{ report.total_income }}</td>
+                <td>{{ report.total_expenses }}</td>
+                <td>{{ report.net_profit }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
