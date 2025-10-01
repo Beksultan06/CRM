@@ -73,7 +73,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "dist",       # React index.html
+            BASE_DIR / "dist",       # React index.html (vite)
             BASE_DIR / "templates",  # Django шаблоны
         ],
         'APP_DIRS': True,
@@ -87,6 +87,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 
 WSGI_APPLICATION = 'core.wsgi.application'
@@ -142,9 +143,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"  # для collectstatic
-STATICFILES_DIRS = [
-    BASE_DIR / "dist/assets",  # JS, CSS, картинки
-]
+STATICFILES_DIRS = [BASE_DIR / "dist/assets"]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/ 'media'
