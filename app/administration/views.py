@@ -11,6 +11,7 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework.decorators import action
 from django.http import HttpResponse
+from collections import defaultdict
 import datetime
 from django.db.models import Count, Sum, Avg, Q, ExpressionWrapper, F, DecimalField, FloatField
 from django.core.exceptions import PermissionDenied
@@ -27,7 +28,7 @@ from app.administration.serializers import (
     PaymentSerializer, GroupDashboardSerializer, MonthsSerializer, GroupTableSerializer, StudentTableSerializer, TeacherTableSerializer, TeacherPaymentSerializer, ExpenseSerializer,  FinancialReportSerializer, InvoiceSerializer,
     ScheduleSerializer, ClassroomSerializer, DailyScheduleSerializer, ScheduleListSerializer, ActiveStudentsSerializer, PopularCoursesSerializer, StudentProgressSerializer,
     TeacherWorkloadSerializer, MonthlyIncomeSerializer, StudentAttendanceSerializer, PaymentSerializer, LeadSerializer, LeadStatusUpdateSerializer, DashboardStatsSerializer,
-    LessonSerializer, HomeworkSubmissionSerializer, PaymentNotificationSerializer, ProfileSerializer, DiscountRegulationSerializer,
+    LessonSerializer, HomeworkSubmissionSerializer, PaymentNotificationSerializer, ProfileSerializer, DiscountRegulationSerializer, UpcomingPaymentNotificationSerializer,
     TeacherProfileSerializer, StudentProfileSerializer, ScheduleCreateSerializer, AddRemoveStudentsSerializer, StudentHomeworkSerializer, HomeworkSubmissionUpdateSerializer
     )
 
@@ -1986,3 +1987,43 @@ class IncomeReportView(APIView):
             "items": items,
             "total_income": total_income
         })
+
+
+class UpcomingPaymentNotificationViewSet(viewsets.ViewSet):
+    """
+    Выводит уведомления о предстоящей оплате для студентов, у которых счет ещё не оплачен,
+    за 3 дня до due_date. Тексты уведомления берутся из модели PaymentNotification.
+    """
+    def list(self, request):
+        today = timezone.now().date()
+        target_date = today + timedelta(days=3)
+
+        # Берем уведомление о платеже (например, первое активное)
+        try:
+            notification_template = PaymentNotification.objects.first()
+        except PaymentNotification.DoesNotExist:
+            return Response({"detail": "Нет шаблона уведомлений"}, status=404)
+
+        invoices = Invoice.objects.filter(
+            due_date=target_date,
+            status__in=['pending', 'partial']
+        ).select_related('student')
+
+        notifications = []
+        for invoice in invoices:
+            student = invoice.student
+            # Подставляем имя студента в message_text, если нужно
+            message_text = notification_template.message_text.replace("{student_name}", student.get_full_name())
+            extra_message = notification_template.extra_message or ""
+
+            notifications.append({
+                'student_id': student.id,
+                'student_full_name': student.get_full_name(),
+                'due_date': invoice.due_date,
+                'amount_to_pay': invoice.final_amount,
+                'message_text': message_text,
+                'extra_message': extra_message
+            })
+
+        serializer = UpcomingPaymentNotificationSerializer(notifications, many=True)
+        return Response(serializer.data)

@@ -173,9 +173,7 @@ class LeadAdmin(admin.ModelAdmin):
 
 @admin.register(PaymentNotification)
 class PaymentNotificationAdmin(admin.ModelAdmin):
-    list_display = ("recipient_name", "due_date", "amount", "created_at")
-    list_filter = ("due_date", "created_at")
-    search_fields = ("recipient_name",)
+    list_display = ("title", "message_text", "extra_message")
 
 
 @admin.register(DiscountRegulation)

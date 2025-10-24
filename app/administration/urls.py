@@ -8,7 +8,7 @@ from app.administration.views import (
     FinancialReportViewSet, GenerateFinancialReport, FinancialReportPDFView,
     CalculateTeacherPayments, ClassroomViewSet, ScheduleViewSet, DailyScheduleView, ExpensePDFView,
     ActiveStudentsAnalytics, MonthlyIncomeAnalytics, TeacherWorkloadAnalytics, PopularCoursesAnalytics,
-    StudentAttendanceView, StudentPaymentsView, LeadViewSet, AdminDashboardView,
+    StudentAttendanceView, StudentPaymentsView, LeadViewSet, AdminDashboardView, UpcomingPaymentNotificationViewSet,
     StudentGradesView, PaymentNotificationViewSet, MonthlyIncomePDFView, TeacherWorkloadPDFView,
     CurrentUserProfileView, DirectionViewSet, TeacherProfileView, StudentProfileView, StudentHomeworkViewSet, InvoiceViewSet, 
     TeacherHomeworkViewSet, StudentProgressView, DiscountRegulationViewSet, StudentAttendanceUpdateView, IncomeReportPDFView, IncomeReportView
@@ -41,7 +41,7 @@ router.register(r'schedule', ScheduleViewSet, basename='schedule')
 router.register(r'leads', LeadViewSet, basename='lead')
 router.register(r'homework', StudentHomeworkViewSet, basename='student-homework')
 router.register(r'discount-regulations', DiscountRegulationViewSet, basename='discountregulation')
-
+router.register(r'upcoming-payment-notifications', UpcomingPaymentNotificationViewSet, basename='upcoming-payment-notification')
 
 
 

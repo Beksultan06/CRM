@@ -619,13 +619,9 @@ class Lead(models.Model):
 
 
 class PaymentNotification(models.Model):
-    recipient_name = models.CharField(max_length=255, verbose_name="Имя получателя")
-    due_date = models.DateField(verbose_name="Срок оплаты")
+    title = models.CharField(max_length=255, verbose_name="Заголовок уведомления")
     message_text = models.TextField(verbose_name="Текст обращения")
-    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма к оплате")
     extra_message = models.TextField(blank=True, null=True, verbose_name="Дополнительное обращение")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
     class Meta:
@@ -633,7 +629,7 @@ class PaymentNotification(models.Model):
         verbose_name_plural = "Уведомления о платежах"
 
     def __str__(self):
-        return f"Уведомление для {self.recipient_name} до {self.due_date}"
+        return self.title
 
 
 

@@ -1448,3 +1448,12 @@ class DiscountRegulationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiscountRegulation
         fields = "__all__"
+
+
+class UpcomingPaymentNotificationSerializer(serializers.Serializer):
+    student_id = serializers.IntegerField()
+    student_full_name = serializers.CharField()
+    due_date = serializers.DateField()
+    amount_to_pay = serializers.DecimalField(max_digits=10, decimal_places=2)
+    message_text = serializers.CharField()
+    extra_message = serializers.CharField(allow_blank=True, required=False)
